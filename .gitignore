@@ -1,0 +1,13 @@
+**/caches/
+**/daemon/
+**/native/
+**/.gradle/
+**/build/*
+**/lib/*
+**/.idea
+**/*.iml
+**/*.ipr
+**/*.iws
+**/.DS_Store
+**/.classpath
+**/.project
