@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 
 @ActionDescription(
     name = "On-Call Trading Totals",
-    description = "Lists the total hours owed for each team member",
+    description = "Lists the total on-call balance in hours for each team member",
     argsSpec = "",
     argsExample = ""
 )
@@ -16,8 +16,8 @@ class ListTotalsAction extends Action {
 
     private val logger = LoggerFactory.getLogger(classOf[ListTotalsAction])
 
-    private var database:DatabaseProvider = null
-    private var api:PagerDutyProvider = null
+    private var database:DatabaseProvider = _
+    private var api:PagerDutyProvider = _
 
     // For testing purposes
     def this(database: DatabaseProvider, api: PagerDutyProvider) = {
@@ -34,7 +34,8 @@ class ListTotalsAction extends Action {
     }
 
     override def execute(ctx: SlackerContext): Boolean = {
-        val response = listUserTotals()
+        var response = "Total on-call balance for each team member" + '\n'
+        response += listUserTotals()
         ctx.setResponseMessage(response)
         return true
     }

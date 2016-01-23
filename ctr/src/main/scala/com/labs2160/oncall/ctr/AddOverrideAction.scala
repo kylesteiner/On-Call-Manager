@@ -4,22 +4,22 @@ import java.util.Properties
 
 import com.labs2160.slacker.api._
 import com.labs2160.slacker.api.annotation.ActionDescription
-import org.joda.time.Hours
-import org.joda.time.format.{ISODateTimeFormat, DateTimeFormatter}
+import org.joda.time.Period
+import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
 import org.slf4j.LoggerFactory
 
 @ActionDescription(
     name = "On-Call Add Override",
     description = "Assign the time interval to the given person on PagerDuty",
-    argsSpec = "<name> <start YYYY-MM-DD:HH> <end YYYY-MM-DD:HH>",
-    argsExample = "pd-add-override steiner 2015-09-28:10 2015-09-29:10"
+    argsSpec = "<name> <start YYYY-MM-DD@HH:mm> <end YYYY-MM-DD@HH:mm>",
+    argsExample = "pd-add-override steiner 2015-09-28@10:00 2015-09-29@10:00"
 )
 class AddOverrideAction extends Action {
 
     private val logger = LoggerFactory.getLogger(classOf[AddOverrideAction])
 
-    private var database:DatabaseProvider = null
-    private var api:PagerDutyProvider = null
+    private var database:DatabaseProvider = _
+    private var api:PagerDutyProvider = _
 
     // For testing purposes
     def this(database: DatabaseProvider, api: PagerDutyProvider) {
@@ -62,13 +62,16 @@ class AddOverrideAction extends Action {
             val parser: DateTimeFormatter = ISODateTimeFormat.dateTimeParser()
             val start = parser.parseDateTime(user("start"))
             val end = parser.parseDateTime(user("end"))
-            val total:Int = database.getUserTotal(user("uid")) - Hours.hoursBetween(start, end).getHours
+            val p = new Period(start, end)
+            val total:Double = database.getUserTotal(user("uid")) - (p.getHours + p.getMinutes / 60.0)
             database.updateUserTotal(user("uid"), total)
         }
 
         // Override schedule
         api.postOverride(start_iso8601.toString, end_iso8601.toString, buyer("id"))
-        val hours:Int = Hours.hoursBetween(start_iso8601, end_iso8601).getHours
+        val p = new Period(start_iso8601, end_iso8601)
+
+        val hours:Double = p.getHours + p.getMinutes / 60.0
         database.updateUserTotal(buyer("id"), database.getUserTotal(buyer("id")) + hours)
 
         return s"${buyer("name")} is now on-call from ${start_pretty} to ${end_pretty}"

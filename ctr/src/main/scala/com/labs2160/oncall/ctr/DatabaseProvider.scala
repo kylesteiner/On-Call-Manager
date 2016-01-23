@@ -13,7 +13,7 @@ class DatabaseProvider extends Resource {
 
     private val logger = LoggerFactory.getLogger(classOf[DatabaseProvider])
 
-    private var DBDir:String = null
+    private var DBDir:String = _
     private var CSVFileList = List[BasicNameValuePair]()
 
     override def setConfiguration(configuration: Properties) = {
@@ -88,11 +88,11 @@ class DatabaseProvider extends Resource {
         return getTableWithHeader("userTotals")
     }
 
-    def getUserTotal(uid: String) : Int = {
+    def getUserTotal(uid: String) : Double = {
         val totals = getUserTotals()
         for (total <- totals) {
             if (total("uid") == uid) {
-                return total("total").toInt
+                return total("total").toDouble
             }
         }
         return 0
@@ -106,7 +106,7 @@ class DatabaseProvider extends Resource {
         addRow("users", List(uid, name, email))
     }
 
-    def updateUserTotal(uid: String, hours: Int) = {
+    def updateUserTotal(uid: String, hours: Double) = {
         addRow("userTotals", List(uid, hours.toString))
     }
 

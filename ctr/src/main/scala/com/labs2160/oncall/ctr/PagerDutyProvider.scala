@@ -16,9 +16,9 @@ class PagerDutyProvider extends Resource {
 
     lazy val client = ClientBuilder.newClient()
 
-    var apiUri:String = null
-    var apiKey:String = null
-    var scheduleID:String = null
+    var apiUri:String = _
+    var apiKey:String = _
+    var scheduleID:String = _
 
     override def setConfiguration(configuration: Properties) = {
         apiUri = Utils.getRequiredConfigParam(configuration, "apiUri")

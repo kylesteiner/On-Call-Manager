@@ -14,7 +14,7 @@ object Utils {
     }
 
     def parseDate(arg: String, timeZone: String) = {
-        val format = new java.text.SimpleDateFormat("yyyy-MM-dd:HH-z")
+        val format = new java.text.SimpleDateFormat("yyyy-MM-dd@HH:mm-z")
         val timeZoneID:String = TimeZone.getTimeZone(timeZone).getID
         val date = format.parse(arg + "-" + timeZoneID)
         val dateTime = new DateTime(date);
