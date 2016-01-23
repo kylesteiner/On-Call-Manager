@@ -1,24 +1,44 @@
 allprojects {
-    group 'com.labs2160.oncall'
-    version '1.0.0-SNAPSHOT'
+    group 'com.steiner.oncall'
+    version '1.0-SNAPSHOT'
 
     apply plugin: 'scala'
+    apply plugin: 'maven'
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
 
     repositories {
         jcenter()
+        mavenLocal()
     }
 
     ext {
         versions = [
                 _scala   : '2.11',
-                scala    : '2.11',
+                scala    : '2.11.7',
                 scalatest: '2.2.4',
                 slf4j    : '1.7.12',
-                slacker  : '1.2-SNAPSHOT'
+                slacker  : '1.2-SNAPSHOT',
+                jersey   : '2.18'
         ]
+    }
+
+    configurations {
+        provided
+    }
+
+    sourceSets {
+        main {
+            compileClasspath += configurations.provided
+        }
+        test {
+            compileClasspath += configurations.provided
+            runtimeClasspath += configurations.provided
+        }
+
     }
 
     dependencies {
@@ -30,5 +50,52 @@ allprojects {
         compile "ch.qos.logback:logback-core:1.1.2"
         testCompile "org.scalatest:scalatest_${versions._scala}:${versions.scalatest}"
         testCompile group: 'junit', name: 'junit', version: '4.11'
+
+        compile "javax.ws.rs:javax.ws.rs-api:2.0.1"
+        compile "org.json:json:20090211"
+        compile "org.glassfish.jersey.core:jersey-client:${versions.jersey}"
+        compile "org.apache.httpcomponents:httpcore:4.3.2"
+        compile "com.typesafe.play:play-json_2.11:2.4.1"
+
+        compile "com.github.tototoshi:scala-csv_${versions._scala}:1.2.2"
+    }
+
+    idea {
+        module {
+            scopes.PROVIDED.plus += [configurations.provided]
+        }
+    }
+
+    eclipse {
+        classpath {
+            plusConfigurations += [configurations.provided]
+            noExportConfigurations += [configurations.provided]
+        }
+    }
+
+    apply plugin: ScalaTestPlugin
+
+    ext.run = {mainclass, task ->
+        javaexec {
+            main = mainclass
+            classpath project.configurations.default
+            classpath project.sourceSets.main.output.classesDir
+            classpath project.sourceSets.main.output.resourcesDir
+        }
+    }
+}
+
+class ScalaTestPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        project.check.dependsOn -= project.tasks.getByName('test')
+        project.tasks.create(name: 'test', dependsOn: 'testClasses', overwrite: true)
+        project.tasks.getByName('test') << {
+            project.javaexec {
+                main = 'org.scalatest.tools.Runner'
+                args = ['-R', 'build/classes/test', '-o']
+                classpath = project.sourceSets.test.runtimeClasspath
+            }
+        }
+        project.check.dependsOn += project.tasks.getByName('test')
     }
 }
