@@ -17,3 +17,18 @@ resources:
     configuration:
       DBDir: "/tmp/oncallDB/"
 ```
+
+Here are recommended workflows that should be added to the config.yaml file "workflows" sections.
+
+```
+workflows:
+  - name: PagerDuty List User Totals
+    alias: pd-list-totals
+    action:
+      className: com.labs2160.oncall.ctr.ListTotalsAction
+
+  - name: PagerDuty Add Override
+    alias: pd-add-override
+    action:
+      className: com.labs2160.oncall.ctr.AddOverrideAction
+```
