@@ -35,13 +35,13 @@ class PagerDutyProvider extends Resource {
       *
       * @param start The start date and time for the override.
       * @param end   The end date and time for the override.
-      * @param uid   The ID of the user who will be on call for the duration of the override.
+      * @param id   The ID of the user who will be on call for the duration of the override.
       */
-    def postOverride(start: String, end: String, uid: String) = {
+    def postOverride(start: String, end: String, id: String) = {
         var parameterList = List[BasicNameValuePair]()
         parameterList ::= new BasicNameValuePair("start", start)
         parameterList ::= new BasicNameValuePair("end", end)
-        parameterList ::= new BasicNameValuePair("user_id", uid)
+        parameterList ::= new BasicNameValuePair("user_id", id)
         postRequest("/schedules/" + scheduleID + "/overrides", parameterList, "override")
     }
 
@@ -120,7 +120,7 @@ class PagerDutyProvider extends Resource {
         var users = List[Map[String, String]]()
         for (entry <- entriesJS) {
             val userMap = scala.collection.mutable.Map[String,String]()
-            userMap.put("uid", (entry \ "user" \ "id").as[String])
+            userMap.put("id", (entry \ "user" \ "id").as[String])
             userMap.put("start", (entry \ "start").as[String])
             userMap.put("end", (entry \ "end").as[String])
             users ::= userMap.toMap

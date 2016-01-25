@@ -18,9 +18,9 @@ class DatabaseProvider extends Resource {
 
     override def setConfiguration(configuration: Properties) = {
         DBDir = Utils.getRequiredConfigParam(configuration, "DBDir")
-        CSVFileList ::= new BasicNameValuePair("transactions.csv", "sellerUID,buyerUID,startDate,endDate")
-        CSVFileList ::= new BasicNameValuePair("users.csv", "uid,name,email")
-        CSVFileList ::= new BasicNameValuePair("userTotals.csv", "uid,total")
+        CSVFileList ::= new BasicNameValuePair("transactions.csv", "sellerID,buyerID,startDate,endDate")
+        CSVFileList ::= new BasicNameValuePair("users.csv", "id,name,email")
+        CSVFileList ::= new BasicNameValuePair("userTotals.csv", "id,total")
     }
 
     override def start = {
@@ -74,57 +74,44 @@ class DatabaseProvider extends Resource {
         return getTableWithHeader("users")
     }
 
-    def getUserFromID(uid: String) : Map[String,String] = {
+    def getUserFromID(id: String) : Map[String,String] = {
         val users = getUsers()
         for (user <- users) {
-            if (user("uid") == uid) {
+            if (user("id") == id) {
                 return user
             }
         }
-        throw new IllegalArgumentException(uid + " did not match any users")
+        throw new IllegalArgumentException(id + " did not match any users")
     }
 
     def getUserTotals() : List[Map[String,String]] = {
         return getTableWithHeader("userTotals")
     }
 
-    def getUserTotal(uid: String) : Double = {
+    def getUserTotal(id: String) : Double = {
         val totals = getUserTotals()
         for (total <- totals) {
-            if (total("uid") == uid) {
+            if (total("id") == id) {
                 return total("total").toDouble
             }
         }
         return 0
     }
 
-    def addTransaction(sellerUID: String, buyerUID: String, startDate: String, endDate: String) = {
-        addRow("transactions", List(sellerUID, buyerUID, startDate, endDate))
+    def addTransaction(sellerID: String, buyerID: String, startDate: String, endDate: String) = {
+        addRow("transactions", List(sellerID, buyerID, startDate, endDate))
     }
 
-    def updateUser(uid: String, name: String, email: String) = {
-        addRow("users", List(uid, name, email))
+    def updateUser(id: String, name: String, email: String) = {
+        addRow("users", List(id, name, email))
     }
 
-    def updateUserTotal(uid: String, hours: Double) = {
-        addRow("userTotals", List(uid, hours.toString))
-    }
-
-    private def getTableWithHeader(table: String) : List[Map[String,String]] = {
-        val reader = CSVReader.open(new File(DBDir + table + ".csv"))
-        val rows: List[Map[String,String]] = reader.allWithHeaders
-        reader.close
-        return rows
-    }
-
-    private def getTableNoHeader(table: String) : List[List[String]] = {
-        val reader = CSVReader.open(new File(DBDir + table + ".csv"))
-        val rows: List[List[String]] = reader.all
-        reader.close
-        return rows
+    def updateUserTotal(id: String, hours: Double) = {
+        addRow("userTotals", List(id, hours.toString))
     }
 
     private def addRow(table: String, newRow: List[String]) = {
+        logger.info(s"Adding row ${newRow} to table ${table}")
         var rows = getTableNoHeader(table)
 
         // Update row if found, otherwise append it
@@ -142,5 +129,19 @@ class DatabaseProvider extends Resource {
         val writer = CSVWriter.open(new File(DBDir + table + ".csv"))
         writer.writeAll(rows)
         writer.close()
+    }
+
+    private def getTableWithHeader(table: String) : List[Map[String,String]] = {
+        val reader = CSVReader.open(new File(DBDir + table + ".csv"))
+        val rows: List[Map[String,String]] = reader.allWithHeaders
+        reader.close
+        return rows
+    }
+
+    private def getTableNoHeader(table: String) : List[List[String]] = {
+        val reader = CSVReader.open(new File(DBDir + table + ".csv"))
+        val rows: List[List[String]] = reader.all
+        reader.close
+        return rows
     }
 }

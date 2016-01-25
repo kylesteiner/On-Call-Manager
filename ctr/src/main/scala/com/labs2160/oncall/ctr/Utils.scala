@@ -20,4 +20,8 @@ object Utils {
         val dateTime = new DateTime(date);
         (dateTime, date)
     }
+
+    def hoursBetween(start: DateTime, end: DateTime): Double = {
+        return (end.getMillis - start.getMillis).toDouble / (1000 * 60 * 60)
+    }
 }

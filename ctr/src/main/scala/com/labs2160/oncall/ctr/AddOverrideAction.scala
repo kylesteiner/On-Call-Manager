@@ -4,7 +4,6 @@ import java.util.Properties
 
 import com.labs2160.slacker.api._
 import com.labs2160.slacker.api.annotation.ActionDescription
-import org.joda.time.Period
 import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
 import org.slf4j.LoggerFactory
 
@@ -62,16 +61,14 @@ class AddOverrideAction extends Action {
             val parser: DateTimeFormatter = ISODateTimeFormat.dateTimeParser()
             val start = parser.parseDateTime(user("start"))
             val end = parser.parseDateTime(user("end"))
-            val p = new Period(start, end)
-            val total:Double = database.getUserTotal(user("uid")) - (p.getHours + p.getMinutes / 60.0)
-            database.updateUserTotal(user("uid"), total)
+            val total:Double = database.getUserTotal(user("id")) - Utils.hoursBetween(start, end)
+            database.updateUserTotal(user("id"), total)
+            database.addTransaction(user("id"), buyer("id"), start.toString, end.toString)
         }
 
         // Override schedule
         api.postOverride(start_iso8601.toString, end_iso8601.toString, buyer("id"))
-        val p = new Period(start_iso8601, end_iso8601)
-
-        val hours:Double = p.getHours + p.getMinutes / 60.0
+        val hours:Double = Utils.hoursBetween(start_iso8601, end_iso8601)
         database.updateUserTotal(buyer("id"), database.getUserTotal(buyer("id")) + hours)
 
         return s"${buyer("name")} is now on-call from ${start_pretty} to ${end_pretty}"

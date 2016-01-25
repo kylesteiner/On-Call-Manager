@@ -44,7 +44,7 @@ class ListTotalsAction extends Action {
         val userTotals:List[Map[String, String]] = database.getUserTotals
         var res = ""
         for (userTotal <- userTotals) {
-            val user:Map[String,String] = database.getUserFromID(userTotal("uid"))
+            val user:Map[String,String] = database.getUserFromID(userTotal("id"))
             res += user("name") + '\t' + userTotal("total") + '\n'
         }
         return res
