@@ -1,9 +1,10 @@
-package com.labs2160.oncall.ctr
+package com.labs2160.oncall.ctr.resources
 
 import java.io.File
 import java.util.Properties
 
 import com.github.tototoshi.csv._
+import com.labs2160.oncall.ctr.Utils
 import com.labs2160.slacker.api._
 import org.apache.http.message.BasicNameValuePair
 import org.slf4j.LoggerFactory
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory
 class DatabaseProvider extends Resource {
 
     private val logger = LoggerFactory.getLogger(classOf[DatabaseProvider])
-
     private var DBDir:String = _
     private var CSVFileList = List[BasicNameValuePair]()
 

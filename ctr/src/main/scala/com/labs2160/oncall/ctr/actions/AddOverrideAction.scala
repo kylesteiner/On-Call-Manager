@@ -1,7 +1,9 @@
-package com.labs2160.oncall.ctr
+package com.labs2160.oncall.ctr.actions
 
 import java.util.Properties
 
+import com.labs2160.oncall.ctr.resources.{DatabaseProvider, PagerDutyProvider}
+import com.labs2160.oncall.ctr.Utils
 import com.labs2160.slacker.api._
 import com.labs2160.slacker.api.annotation.ActionDescription
 import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
@@ -16,7 +18,6 @@ import org.slf4j.LoggerFactory
 class AddOverrideAction extends Action {
 
     private val logger = LoggerFactory.getLogger(classOf[AddOverrideAction])
-
     private var database:DatabaseProvider = _
     private var api:PagerDutyProvider = _
 
@@ -36,7 +37,7 @@ class AddOverrideAction extends Action {
     override def execute(ctx: SlackerContext) : Boolean = {
         val args:Array[String] = ctx.getRequestArgs
         if (args == null || args.length != 3) {
-            throw new NoArgumentsFoundException("4 arguments required")
+            throw new NoArgumentsFoundException("3 arguments required")
         }
 
         val response = addOverride(args(0), args(1), args(2))

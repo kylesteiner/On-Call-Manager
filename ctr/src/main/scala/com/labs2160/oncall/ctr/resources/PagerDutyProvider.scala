@@ -1,9 +1,10 @@
-package com.labs2160.oncall.ctr
+package com.labs2160.oncall.ctr.resources
 
 import java.util.Properties
 import javax.ws.rs.client.{ClientBuilder, Entity, WebTarget}
 import javax.ws.rs.core.Response.Status._
 
+import com.labs2160.oncall.ctr.Utils
 import com.labs2160.slacker.api._
 import org.apache.http.message.BasicNameValuePair
 import org.json.JSONObject
@@ -13,7 +14,6 @@ import play.api.libs.json._
 class PagerDutyProvider extends Resource {
 
     private val logger = LoggerFactory.getLogger(classOf[PagerDutyProvider])
-
     lazy val client = ClientBuilder.newClient()
 
     var apiUri:String = _

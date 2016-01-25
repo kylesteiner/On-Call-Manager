@@ -25,10 +25,15 @@ workflows:
   - name: PagerDuty List User Totals
     alias: pd-list-totals
     action:
-      className: com.labs2160.oncall.ctr.ListTotalsAction
+      className: com.labs2160.oncall.ctr.actions.ListTotalsAction
 
   - name: PagerDuty Add Override
     alias: pd-add-override
     action:
-      className: com.labs2160.oncall.ctr.AddOverrideAction
+      className: com.labs2160.oncall.ctr.actions.AddOverrideAction
+
+  - name: PagerDuty Set User Total
+    alias: pd-set-total
+    action:
+      className: com.labs2160.oncall.ctr.actions.SetUserTotalAction
 ```

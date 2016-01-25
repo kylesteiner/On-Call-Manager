@@ -1,7 +1,8 @@
-package com.labs2160.oncall.ctr
+package com.labs2160.oncall.ctr.actions
 
 import java.util.Properties
 
+import com.labs2160.oncall.ctr.resources.{DatabaseProvider, PagerDutyProvider}
 import com.labs2160.slacker.api._
 import com.labs2160.slacker.api.annotation.ActionDescription
 import org.slf4j.LoggerFactory
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory
 class ListTotalsAction extends Action {
 
     private val logger = LoggerFactory.getLogger(classOf[ListTotalsAction])
-
     private var database:DatabaseProvider = _
     private var api:PagerDutyProvider = _
 
