@@ -2,8 +2,8 @@ package com.labs2160.oncall.ctr.actions
 
 import java.util.Properties
 
-import com.labs2160.oncall.ctr.resources.{DatabaseProvider, PagerDutyProvider}
 import com.labs2160.oncall.ctr.Utils
+import com.labs2160.oncall.ctr.resources.{DatabaseProvider, PagerDutyProvider}
 import com.labs2160.slacker.api._
 import com.labs2160.slacker.api.annotation.ActionDescription
 import org.joda.time.format.{DateTimeFormatter, ISODateTimeFormat}
@@ -28,8 +28,7 @@ class AddOverrideAction extends Action {
         this.api = api
     }
 
-    override def setConfiguration(config: Properties) : Unit = {
-        val resources = config.get("resources").asInstanceOf[java.util.Map[String, Resource]]
+    override def setConfiguration(resources: java.util.Map[String, Resource], config: Properties) : Unit = {
         this.database = resources.get("OnCallDB").asInstanceOf[DatabaseProvider]
         this.api = resources.get("PagerDuty").asInstanceOf[PagerDutyProvider]
     }

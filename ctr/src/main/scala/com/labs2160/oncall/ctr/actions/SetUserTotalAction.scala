@@ -26,8 +26,7 @@ class SetUserTotalAction extends Action {
         this.api = api
     }
 
-    override def setConfiguration(config: Properties): Unit = {
-        val resources = config.get("resources").asInstanceOf[java.util.Map[String, Resource]]
+    override def setConfiguration(resources: java.util.Map[String, Resource], config: Properties): Unit = {
         this.database = resources.get("OnCallDB").asInstanceOf[DatabaseProvider]
         this.api = resources.get("PagerDuty").asInstanceOf[PagerDutyProvider]
     }
