@@ -26,7 +26,7 @@ class SetUserTotalAction extends Action {
         this.api = api
     }
 
-    override def setConfiguration(resources: java.util.Map[String, Resource], config: Properties): Unit = {
+    override def setComponents(resources: java.util.Map[String, Resource], config: Properties): Unit = {
         this.database = resources.get("OnCallDB").asInstanceOf[DatabaseProvider]
         this.api = resources.get("PagerDuty").asInstanceOf[PagerDutyProvider]
     }

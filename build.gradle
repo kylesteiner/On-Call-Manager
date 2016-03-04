@@ -21,7 +21,7 @@ allprojects {
                 scala    : '2.11.7',
                 scalatest: '2.2.4',
                 slf4j    : '1.7.12',
-                slacker  : '1.2-SNAPSHOT',
+                slacker  : '1.3-SNAPSHOT',
                 jersey   : '2.18'
         ]
     }

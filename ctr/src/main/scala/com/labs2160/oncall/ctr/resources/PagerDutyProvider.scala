@@ -26,10 +26,6 @@ class PagerDutyProvider extends Resource {
         scheduleID = Utils.getRequiredConfigParam(configuration, "scheduleID")
     }
 
-    override def start = { }
-
-    override def shutdown = { }
-
     /**
       * See https://developer.pagerduty.com/documentation/rest/schedules/overrides/create
       *

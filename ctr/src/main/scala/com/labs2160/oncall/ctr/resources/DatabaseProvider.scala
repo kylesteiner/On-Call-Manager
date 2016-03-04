@@ -21,18 +21,11 @@ class DatabaseProvider extends Resource {
         CSVFileList ::= new BasicNameValuePair("transactions.csv", "sellerID,buyerID,startDate,endDate")
         CSVFileList ::= new BasicNameValuePair("users.csv", "id,name,email")
         CSVFileList ::= new BasicNameValuePair("userTotals.csv", "id,total")
-    }
 
-    override def start = {
         createDBDir()
-
         for (fileConf <- CSVFileList) {
             createCSVFile(fileConf)
         }
-    }
-
-    override def shutdown = {
-        // do nothing
     }
 
     // Create directory for CSV files
